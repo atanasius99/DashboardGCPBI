@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard Monitoring Wonosobo</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- CSS -->
+<link rel="stylesheet" href="style.css">
+
+<!-- Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="container-fluid p-4">
+
+<!-- HEADER -->
+<div class="header">
+<h2>Dashboard Monitoring GC PBI Kabupaten Wonosobo</h2>
+<p>Total Dokumen : 27.763</p>
+<p id="lastUpdate">Last Update: -</p>
+</div>
+
+<!-- CARD -->
+<div class="row">
+
+<div class="col-md-3">
+<div class="card dashboard-card">
+<h5>OPEN</h5>
+<h2 id="open">0</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card dashboard-card">
+<h5>SUBMITED</h5>
+<h2 id="submit">0</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card dashboard-card">
+<h5>REJECT</h5>
+<h2 id="reject">0</h2>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card dashboard-card">
+<h5>Progress</h5>
+<h2 id="progress">0%</h2>
+</div>
+</div>
+
+</div>
+
+<!-- CHART -->
+<div class="row mt-4">
+
+<div class="col-md-6">
+<div class="card p-3">
+<h5>Status</h5>
+<canvas id="statusChart"></canvas>
+</div>
+</div>
+
+<div class="col-md-6">
+<div class="card p-3">
+<h5>Progress Kecamatan</h5>
+<canvas id="kecChart"></canvas>
+</div>
+</div>
+
+</div>
+
+<!-- TABLE -->
+<div class="row mt-4">
+<div class="col-md-12">
+<div class="card p-3">
+
+<h5>Tabel Kecamatan</h5>
+
+<table class="table table-striped">
+
+<thead>
+<tr>
+<th>Kecamatan</th>
+<th>OPEN</th>
+<th>SUBMITED</th>
+<th>REJECT</th>
+<th>Progress</th>
+</tr>
+</thead>
+
+<tbody id="table"></tbody>
+
+</table>
+
+</div>
+</div>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
