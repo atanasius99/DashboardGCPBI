@@ -65,7 +65,7 @@ kecData[kec] = {open:0,submit:0,reject:0}
 
 if(status==="OPEN"){ open++; kecData[kec].open++ }
 if(status==="SUBMITTED BY Pencacah"){ submit++; kecData[kec].submit++ }
-if(status==="REJECT"){ reject++; kecData[kec].reject++ }
+if(status==="REJECTED BY Admin Kabupaten"){ reject++; kecData[kec].reject++ }
 
 });
 
