@@ -75,3 +75,71 @@ vertical-align:middle;
 .table tbody tr:hover{
 background:#f1f5ff;
 }
+
+/* LOGO HEADER */
+.header-logo img{
+height: 150px;
+width: auto;
+object-fit: contain;
+}
+
+/* RESPONSIVE (HP) */
+@media (max-width: 768px){
+.header{
+flex-direction: column;
+text-align: center;
+gap: 10px;
+}
+
+.header-logo img{
+height: 70px;
+transition: 0.3s;
+}
+
+.header-logo img:hover{
+transform: scale(1.05);
+}
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px){
+
+/* Jarak antar card */
+.row > div{
+margin-bottom:15px;
+}
+
+/* Header lebih rapih */
+.header{
+text-align:center;
+}
+
+/* Chart biar tidak kepotong */
+.chart-equal{
+height:300px !important;
+}
+
+/* Canvas full */
+canvas{
+max-width:100% !important;
+height:auto !important;
+}
+
+/* Table biar bisa scroll */
+.table{
+display:block;
+overflow-x:auto;
+white-space:nowrap;
+}
+
+/* Tombol biar full */
+button{
+width:100%;
+margin-bottom:10px;
+}
+
+/* Judul tabel */
+.card h5{
+font-size:16px;
+}
+}
