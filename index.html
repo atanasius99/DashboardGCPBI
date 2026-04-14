@@ -37,29 +37,29 @@
 <div class="col-md-3"><div class="card dashboard-card"><h5>OPEN</h5><h2 id="open">0</h2></div></div>
 <div class="col-md-3"><div class="card dashboard-card"><h5>SUBMITED</h5><h2 id="submit">0</h2></div></div>
 <div class="col-md-3"><div class="card dashboard-card"><h5>REJECT</h5><h2 id="reject">0</h2></div></div>
-<div class="col-md-3"><div class="card dashboard-card"><h5>Progress</h5><h2 id="progress">0%</h2></div></div>
+<div class="col-md-3"><div class="card dashboard-card"><h5>PROGRESS</h5><h2 id="progress">0%</h2></div></div>
 
 </div>
 
-<div class="row mt-4">
+<div class="row mt-4 align-items-stretch">
 
-<div class="col-md-4">
-<div class="card p-3">
+<div class="col-md-3 d-flex">
+<div class="card p-3 w-100 chart-equal">
 <h5>Status</h5>
 <canvas id="statusChart"></canvas>
 </div>
 </div>
 
-<div class="col-md-4">
-<div class="card p-3">
+<div class="col-md-3 d-flex">
+<div class="card p-3 w-100 chart-equal">
 <h5>Keberadaan</h5>
 <canvas id="keberadaanChart"></canvas>
 </div>
 </div>
 
-<div class="col-md-4">
-<div class="card p-3">
-<h5>Progress Kecamatan</h5>
+<div class="col-md-6 d-flex">
+<div class="card p-3 w-100 chart-equal">
+<h5>Progres Kecamatan</h5>
 <canvas id="kecChart"></canvas>
 </div>
 </div>
@@ -77,19 +77,24 @@
 <thead>
 <tr>
 <th>Kecamatan</th>
-<th>OPEN</th>
-<th>SUBMITTED</th>
-<th>REJECTED</th>
-<th>Progress</th>
-<th>Tidak Ditemukan (STOP)</th>
-<th>Ditemukan</th>
-<th>Meninggal</th>
-<th>Tidak Eligible</th>
-<th>Tidak Ditemui</th>
+<th class="text-end">OPEN</th>
+<th class="text-end">SUBMITTED</th>
+<th class="text-end">REJECTED</th>
+<th class="text-end">Progress</th>
+<th class="text-end">Tidak Ditemukan (STOP)</th>
+<th class="text-end">Ditemukan</th>
+<th class="text-end">Meninggal</th>
+<th class="text-end">Tidak Eligible</th>
+<th class="text-end">Tidak Ditemui</th>
 </tr>
 </thead>
 
 <tbody id="table"></tbody>
+
+<div class="mb-3">
+<button class="btn btn-success me-2" onclick="exportKecamatan()">
+Download Tabel Kecamatan
+</button>
 
 </table>
 
@@ -109,14 +114,19 @@
 <tr>
 <th>Kecamatan</th>
 <th>Nama Petugas</th>
-<th>OPEN</th>
-<th>SUBMITTED</th>
-<th>REJECTED</th>
-<th>Progress</th>
+<th class="text-end">OPEN</th>
+<th class="text-end">SUBMITTED</th>
+<th class="text-end">REJECTED</th>
+<th class="text-end">Progress</th>
 </tr>
 </thead>
 
 <tbody id="tablePetugas"></tbody>
+
+<div class="mb-3">
+<button class="btn btn-success me-2" onclick="exportPetugas()">
+Download Tabel Petugas
+</button>
 
 </table>
 

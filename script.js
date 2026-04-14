@@ -10,6 +10,20 @@ const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOy5bdGMBef5F
 let statusChart, kecChart, keberadaanChart;
 let selectedKec = "ALL";
 
+// ================= WARNA PASTEL =================
+const COLORS = {
+open: "#FFD6A5",
+submit: "#8FD6B5",
+reject: "#FF9AA2",
+
+tidak: "#C7CED6",
+ditemukan: "#8FD6B5",
+meninggal: "#FF9AA2",
+tidakEligible: "#AFCBFF",
+tidakDitemui: "#FFD6A5",
+
+bar: "#7DA8F0"
+};
 
 // ================= PARSE TANGGAL =================
 function parseTanggal(waktu){
@@ -38,6 +52,112 @@ let min = String(date.getMinutes()).padStart(2,'0');
 let s = String(date.getSeconds()).padStart(2,'0');
 
 return `${d}/${m}/${y} ${h}:${min}:${s}`;
+}
+
+
+// ================= LABEL DI ATAS BAR =================
+const labelBarPlugin = {
+id: 'labelBarPlugin',
+afterDatasetsDraw(chart) {
+const {ctx} = chart;
+
+chart.data.datasets.forEach((dataset, i) => {
+const meta = chart.getDatasetMeta(i);
+
+meta.data.forEach((bar, index) => {
+let value = dataset.data[index];
+
+ctx.fillStyle = "#000";
+ctx.font = "bold 12px Arial";
+ctx.textAlign = "center";
+
+ctx.fillText(value + "%", bar.x, bar.y - 5);
+});
+});
+}
+};
+
+
+// ================= EXPORT FUNCTION =================
+function downloadExcel(filename, rows){
+
+let csvContent = "data:text/csv;charset=utf-8,sep=;\n"; // ✅ tambahan sep
+
+rows.forEach(row=>{
+csvContent += row.join(";") + "\n";
+});
+
+let encodedUri = encodeURI(csvContent);
+let link = document.createElement("a");
+
+link.setAttribute("href", encodedUri);
+link.setAttribute("download", filename);
+
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+}
+
+
+// ================= EXPORT KECAMATAN =================
+function exportKecamatan(){
+
+let rows = [];
+
+rows.push([
+"Kecamatan","OPEN","SUBMITTED","REJECTED","Progress (%)",
+"Tidak Ditemukan","Ditemukan","Meninggal",
+"Tidak Eligible","Tidak Ditemui"
+]);
+
+Object.keys(window.kecDataExport || {}).sort().forEach(kec=>{
+
+let d = window.kecDataExport[kec];
+let total = d.open + d.submit + d.reject;
+let prog = total ? ((d.submit/total)*100).toFixed(2) : 0;
+
+rows.push([
+kecamatan[kec]||kec,
+d.open,
+d.submit,
+d.reject,
+prog,
+d.tidak,
+d.ditemukan,
+d.meninggal,
+d.tidakEligible,
+d.tidakDitemui
+]);
+
+});
+
+downloadExcel("kecamatan.csv", rows);
+}
+
+
+// ================= EXPORT PETUGAS =================
+function exportPetugas(){
+
+let rows = [];
+
+rows.push([
+"Kecamatan","Nama Petugas","OPEN","SUBMITTED","REJECTED","Progress (%)"
+]);
+
+(window.petugasDataExport || []).forEach(p=>{
+
+rows.push([
+kecamatan[p.kec] || p.kec,
+p.nama,
+p.open,
+p.submit,
+p.reject,
+p.progress
+]);
+
+});
+
+downloadExcel("petugas.csv", rows);
 }
 
 
@@ -73,18 +193,17 @@ let waktu = col[5];
 
 if(!kec || !status) return;
 
-// FILTER
 if(selectedKec !== "ALL" && kec !== selectedKec) return;
 
 
-// ================= LAST UPDATE =================
+// LAST UPDATE
 let t = parseTanggal(waktu);
 if(t && (!lastTime || t > lastTime)){
 lastTime = t;
 }
 
 
-// ================= INIT KEC =================
+// INIT KEC
 if(!kecData[kec]){
 kecData[kec]={
 open:0,submit:0,reject:0,
@@ -94,9 +213,9 @@ tidakEligible:0,tidakDitemui:0
 }
 
 
-// ================= INIT PETUGAS =================
+// INIT PETUGAS
 if(nama){
-let key = kec + "_" + nama; // 🔥 biar tidak ketimpa
+let key = kec + "_" + nama;
 
 if(!petugasData[key]){
 petugasData[key]={
@@ -110,7 +229,7 @@ reject:0
 }
 
 
-// ================= STATUS =================
+// STATUS
 if(status==="OPEN"){
 open++;
 kecData[kec].open++;
@@ -130,7 +249,7 @@ if(nama) petugasData[kec+"_"+nama].reject++;
 }
 
 
-// ================= KEBERADAAN =================
+// KEBERADAAN
 if(keberadaan?.includes("0. Tidak Ditemukan")){ tidak++; kecData[kec].tidak++ }
 if(keberadaan?.includes("1. Ditemukan")){ ditemukan++; kecData[kec].ditemukan++ }
 if(keberadaan?.includes("3. Meninggal")){ meninggal++; kecData[kec].meninggal++ }
@@ -140,7 +259,11 @@ if(keberadaan?.includes("Tidak dapat ditemui")){ tidakDitemui++; kecData[kec].ti
 });
 
 
-// ================= DROPDOWN =================
+// SIMPAN UNTUK EXPORT
+window.kecDataExport = kecData;
+
+
+// DROPDOWN
 let dropdown = document.getElementById("filterKec");
 if(dropdown && dropdown.options.length === 1){
 Object.keys(kecamatan).forEach(k=>{
@@ -152,7 +275,7 @@ dropdown.appendChild(opt);
 }
 
 
-// ================= CARD =================
+// CARD
 let total = open+submit+reject;
 
 document.getElementById("open").innerText=open.toLocaleString("id-ID");
@@ -163,33 +286,35 @@ let progress = total ? ((submit/total)*100).toFixed(2) : 0;
 document.getElementById("progress").innerText=progress+"%";
 
 
-// ================= LAST UPDATE =================
+// LAST UPDATE
 if(lastTime){
 document.getElementById("lastUpdate").innerText =
 "Last Update: " + formatWaktu(lastTime);
 }
 
 
-// ================= CHART STATUS =================
+// CHART STATUS
 if(statusChart) statusChart.destroy();
-
 statusChart = new Chart(document.getElementById("statusChart"),{
-type:"pie",
+type:"doughnut",
 data:{
 labels:["OPEN","SUBMIT","REJECT"],
 datasets:[{
 data:[open,submit,reject],
-backgroundColor:["#ffc107","#198754","#dc3545"]
+backgroundColor:[
+COLORS.open,
+COLORS.submit,
+COLORS.reject
+]
 }]
 }
 });
 
 
-// ================= CHART KEBERADAAN =================
+// CHART KEBERADAAN
 if(keberadaanChart) keberadaanChart.destroy();
-
 keberadaanChart = new Chart(document.getElementById("keberadaanChart"),{
-type:"pie",
+type:"doughnut",
 data:{
 labels:[
 "Tidak Ditemukan",
@@ -200,15 +325,20 @@ labels:[
 ],
 datasets:[{
 data:[tidak,ditemukan,meninggal,tidakEligible,tidakDitemui],
-backgroundColor:["#6c757d","#198754","#dc3545","#0dcaf0","#fd7e14"]
+backgroundColor:[
+COLORS.tidak,
+COLORS.ditemukan,
+COLORS.meninggal,
+COLORS.tidakEligible,
+COLORS.tidakDitemui
+]
 }]
 }
 });
 
 
-// ================= TABLE KEC =================
+// TABLE KEC
 let html="";
-
 Object.keys(kecData).sort().forEach(kec=>{
 let d=kecData[kec];
 let totalKec=d.open+d.submit+d.reject;
@@ -220,98 +350,92 @@ let warna = prog >= 80 ? "#d1e7dd" :
 html+=`
 <tr style="background:${warna}">
 <td>${kecamatan[kec]||kec}</td>
-<td>${d.open}</td>
-<td>${d.submit}</td>
-<td>${d.reject}</td>
-<td>${prog}%</td>
-<td>${d.tidak}</td>
-<td>${d.ditemukan}</td>
-<td>${d.meninggal}</td>
-<td>${d.tidakEligible}</td>
-<td>${d.tidakDitemui}</td>
+<td class="text-end">${d.open}</td>
+<td class="text-end">${d.submit}</td>
+<td class="text-end">${d.reject}</td>
+<td class="text-end">${prog}%</td>
+<td class="text-end">${d.tidak}</td>
+<td class="text-end">${d.ditemukan}</td>
+<td class="text-end">${d.meninggal}</td>
+<td class="text-end">${d.tidakEligible}</td>
+<td class="text-end">${d.tidakDitemui}</td>
 </tr>
 `;
 });
-
 document.getElementById("table").innerHTML=html;
 
 
-// ================= TABLE PETUGAS (URUT KEC → NAMA) =================
-let petugasHTML="";
+// TABLE PETUGAS
+let petugasArr=[];
+Object.values(petugasData).forEach(d=>{
+let total=d.open+d.submit+d.reject;
+let prog=total?((d.submit/total)*100).toFixed(2):0;
 
-let sortedPetugas = Object.values(petugasData).sort((a,b)=>{
-if(a.kec === b.kec){
-return a.nama.localeCompare(b.nama);
-}
-return a.kec.localeCompare(b.kec);
+petugasArr.push({...d,progress:prog});
 });
 
-sortedPetugas.forEach(d=>{
+// simpan untuk export
+window.petugasDataExport = petugasArr;
 
-let total = d.open + d.submit + d.reject;
-let prog = total ? ((d.submit/total)*100).toFixed(2) : 0;
-
-petugasHTML += `
+let petugasHTML="";
+petugasArr.sort((a,b)=>{
+if(a.kec===b.kec) return a.nama.localeCompare(b.nama);
+return a.kec.localeCompare(b.kec);
+}).forEach(d=>{
+petugasHTML+=`
 <tr>
-<td>${kecamatan[d.kec] || d.kec}</td>
+<td>${kecamatan[d.kec]}</td>
 <td>${d.nama}</td>
-<td>${d.open}</td>
-<td>${d.submit}</td>
-<td>${d.reject}</td>
-<td>${prog}%</td>
+<td class="text-end">${d.open}</td>
+<td class="text-end">${d.submit}</td>
+<td class="text-end">${d.reject}</td>
+<td class="text-end">${d.progress}%</td>
 </tr>
 `;
-
 });
 
-let petugasTable = document.getElementById("tablePetugas");
-if(petugasTable){
-petugasTable.innerHTML = petugasHTML;
-}
+let petugasTable=document.getElementById("tablePetugas");
+if(petugasTable) petugasTable.innerHTML=petugasHTML;
 
 
-// ================= CHART KEC =================
+// CHART KEC
 if(kecChart) kecChart.destroy();
 
 let labels=[], dataProg=[];
-
 Object.keys(kecData).sort().forEach(kec=>{
 let d=kecData[kec];
 let totalKec=d.open+d.submit+d.reject;
 let prog=totalKec?((d.submit/totalKec)*100).toFixed(2):0;
 
-labels.push(kecamatan[kec]||kec);
+labels.push(kecamatan[kec]);
 dataProg.push(prog);
 });
 
-kecChart = new Chart(document.getElementById("kecChart"),{
+kecChart=new Chart(document.getElementById("kecChart"),{
 type:"bar",
 data:{
 labels:labels,
 datasets:[{
 label:"Progress (%)",
 data:dataProg,
-backgroundColor:"#0d6efd"
+backgroundColor:"rgb(80, 141, 233)"
 }]
 },
-options:{
-scales:{
-y:{beginAtZero:true,max:100}
-}
-}
+options:{scales:{y:{beginAtZero:true,max:100}}},
+plugins:[labelBarPlugin]
 });
 
 });
 }
 
 
-// ================= EVENT FILTER =================
+// EVENT FILTER
 document.getElementById("filterKec").addEventListener("change", function(){
 selectedKec = this.value;
 loadData();
 });
 
 
-// ================= INIT =================
+// INIT
 loadData();
 setInterval(loadData,300000);
