@@ -68,11 +68,36 @@ meta.data.forEach((bar, index) => {
 let value = dataset.data[index];
 
 ctx.fillStyle = "#000";
-ctx.font = "bold 12px Arial";
+ctx.font = "bold 10px Arial";
 ctx.textAlign = "center";
 
 ctx.fillText(value + "%", bar.x, bar.y - 5);
 });
+});
+}
+};
+
+// ================= LABEL DONUT (%) =================
+const doughnutLabel = {
+id: 'doughnutLabel',
+afterDraw(chart) {
+const {ctx} = chart;
+const dataset = chart.data.datasets[0].data;
+const total = dataset.reduce((a,b)=>a+b,0) || 1;
+
+chart.getDatasetMeta(0).data.forEach((arc, i) => {
+let value = dataset[i];
+if(value === 0) return;
+
+let percent = ((value/total)*100).toFixed(1)+"%";
+
+let x = arc.tooltipPosition().x;
+let y = arc.tooltipPosition().y;
+
+ctx.fillStyle = "#000";
+ctx.font = "11px Arial";
+ctx.textAlign = "center";
+ctx.fillText(percent, x, y);
 });
 }
 };
@@ -293,7 +318,7 @@ document.getElementById("lastUpdate").innerText =
 }
 
 
-// CHART STATUS
+// ================= CHART STATUS =================
 if(statusChart) statusChart.destroy();
 statusChart = new Chart(document.getElementById("statusChart"),{
 type:"doughnut",
@@ -301,39 +326,39 @@ data:{
 labels:["OPEN","SUBMIT","REJECT"],
 datasets:[{
 data:[open,submit,reject],
-backgroundColor:[
-COLORS.open,
-COLORS.submit,
-COLORS.reject
-]
+backgroundColor:[COLORS.open,COLORS.submit,COLORS.reject]
 }]
-}
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+cutout:"65%",
+plugins:{legend:{position:"bottom"}}
+},
+plugins:[doughnutLabel]
 });
 
 
-// CHART KEBERADAAN
+// ================= CHART KEBERADAAN =================
 if(keberadaanChart) keberadaanChart.destroy();
 keberadaanChart = new Chart(document.getElementById("keberadaanChart"),{
 type:"doughnut",
 data:{
-labels:[
-"Tidak Ditemukan",
-"Ditemukan",
-"Meninggal",
-"Tidak Eligible",
-"Tidak Ditemui"
-],
+labels:["Tidak Ditemukan","Ditemukan","Meninggal","Tidak Eligible","Tidak Ditemui"],
 datasets:[{
 data:[tidak,ditemukan,meninggal,tidakEligible,tidakDitemui],
 backgroundColor:[
-COLORS.tidak,
-COLORS.ditemukan,
-COLORS.meninggal,
-COLORS.tidakEligible,
-COLORS.tidakDitemui
-]
+COLORS.tidak,COLORS.ditemukan,COLORS.meninggal,
+COLORS.tidakEligible,COLORS.tidakDitemui]
 }]
-}
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+cutout:"65%",
+plugins:{legend:{position:"bottom"}}
+},
+plugins:[doughnutLabel]
 });
 
 
