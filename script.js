@@ -213,7 +213,7 @@ let col = row.split(",").map(x=>x.trim());
 let kec = col[0]?.padStart(3,"0");
 let status = col[1];
 let keberadaan = col[2];
-let nama = col[4];
+let nama = col[4]?.replace(/^"|"$/g, "").trim();
 let waktu = col[5];
 
 if(!kec || !status) return;
