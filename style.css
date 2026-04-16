@@ -1,16 +1,16 @@
 body{
-background:#f8f9fc;
-font-family:Arial, Helvetica, sans-serif;
-color:#0c0e11;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* HEADER */
 .header{
-background:linear-gradient(135deg,#fdcca1,#fbd9c2);
-color:#000000;
-padding:20px;
-border-radius:12px;
-margin-bottom:20px;
+  background: linear-gradient(135deg,#fdcca1,#fbd9c2);
+  padding: 24px 28px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* CARD DASHBOARD */
@@ -36,15 +36,28 @@ box-shadow:0 4px 12px rgba(0,0,0,0.06);
 background:#ffffff;
 }
 
-/* JUDUL */
-h2{
-font-weight:bold;
+/* JUDUL UTAMA */
+.header h2{
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: px;
+  color: #1f2937;
+}
+
+/* SUB TEXT */
+.header p{
+  margin: 0;
+  font-size: 15px;
+  margin-top: 20px;
+  color: #000000;
+  opacity: 0.85;
 }
 
 /* LAST UPDATE */
 #lastUpdate{
-font-size:14px;
-opacity:0.8;
+  font-size: 15px;
+  color: #000000;
+  margin-top: 20px;
 }
 
 /* CHART SIZE */
@@ -78,9 +91,16 @@ background:#f1f5ff;
 
 /* LOGO HEADER */
 .header-logo img{
-height: 150px;
+height: 125px;
 width: auto;
 object-fit: contain;
+opacity: 0.85;
+transition: 0.2s;
+}
+
+.header-logo img:hover{
+  opacity: 1;
+  transform: scale(1.08);
 }
 
 /* RESPONSIVE (HP) */
@@ -183,6 +203,44 @@ box-shadow: 0 0 0 3px rgba(167,139,250,0.25);
 outline: none;
 }
 
+/* FILTER WRAPPER */
+.filter-box{
+  position: relative;
+  width: 100%;
+}
+
+/* SELECT */
+#filterKec{
+  padding-left: 40px; /* ruang icon kiri */
+  padding-right: 35px; /* ruang icon kanan */
+  height: 48px;
+  border-radius: 12px;
+  background: #f3e8ff;
+  border: 1px solid #d6c7ff;
+  font-weight: 500;
+}
+
+/* ICON KIRI (FILTER) */
+.filter-icon{
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+/* ICON KANAN (DROPDOWN) */
+.dropdown-icon{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 /* ================= CARD WARNA ================= */
 
 /* OPEN */
@@ -227,3 +285,24 @@ opacity: 0.7;
 transform: translateY(-5px);
 box-shadow: 0 6px 18px rgba(0,0,0,0.1);
 }
+
+/* LOGO KECIL */
+.logo-kecil{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* LOGO KECIL */
+.logo-kecil img{
+  height: 40px;
+  object-fit: contain;
+  opacity: 0.85;
+  transition: 0.2s;
+}
+
+.logo-kecil img:hover{
+  opacity: 1;
+  transform: scale(1.08);
+}
+
