@@ -305,3 +305,35 @@ box-shadow: 0 6px 18px rgba(0,0,0,0.1);
   opacity: 1;
   transform: scale(1.08);
 }
+
+/* BACK BUTTON */
+.back-btn{
+background: #4a90e2;
+color: white;
+border-radius: 10px;
+padding: 8px 16px;
+font-weight: 500;
+transition: 0.2s;
+}
+
+.back-btn:hover{
+background: #357abd;
+color: white;
+transform: translateY(-2px);
+}
+
+/* SORT PROGRESS */
+.progress-sort{
+cursor: pointer;
+user-select: none;
+}
+
+.progress-sort:hover{
+color:#4a90e2;
+}
+
+/* PAGINATION */
+#pageInfo{
+font-weight:500;
+color:#555;
+}
